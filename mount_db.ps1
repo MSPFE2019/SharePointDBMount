@@ -1,11 +1,11 @@
 #Add SharePoint PowerShell Snap-In 
-                                                if ((Get-PSSnapin "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinue) -eq $null) { 
-                                                Add-PSSnapin "Microsoft.SharePoint.PowerShell"} 
+if ((Get-PSSnapin "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinue)
+-eq $null) {Add-PSSnapin "Microsoft.SharePoint.PowerShell"} 
 
 
 ###PowerShell run as Job#####
 
-  Import-Csv "F:\contentdbs.csv"| %{
+  Import-Csv "contentdbs.csv"| %{
 
   # Define what each job does
   $ScriptBlock = {
