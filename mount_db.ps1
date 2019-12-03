@@ -19,7 +19,10 @@ if ((Get-PSSnapin "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinu
 
 
 ###PowerShell run as Job#####
-
+foreach($Object in $Objects) { #Where $Objects is a collection of objects to process. It may be a computers list, for example.
+    $Check = $false #Variable to allow endless looping until the number of running jobs will be less than $maxConcurrentJobs.
+    while ($Check -eq $false) {
+        if ((Get-Job -State 'Running').Count -lt $maxConcurrentJobs) {
   Import-Csv "contentdbs.csv"| %{
 
   # Define what each job does
@@ -33,6 +36,7 @@ if ((Get-PSSnapin "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinu
 
   # Execute the jobs in parallel
   Start-Job -Name $_.name $ScriptBlock -ArgumentList $_
+  $Check = $true #To stop endless looping and proceed to the next object in the list
 }
 
 
