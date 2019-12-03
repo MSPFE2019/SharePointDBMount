@@ -1,4 +1,3 @@
-  
 ##########################################################################################################
 # Disclaimer
 # The sample scripts are not supported under any Microsoft standard support program or service.
@@ -17,15 +16,14 @@
 if ((Get-PSSnapin "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinue)
 -eq $null) {Add-PSSnapin "Microsoft.SharePoint.PowerShell"} 
 
-
-| 
- 
+####Import CSV file from current directory 
   Import-Csv "contentdbs.csv"| % {
-   $MaxThreads = 7
-   While (@(Get-Job | Where { $_.State -eq "Running" }).Count -ge $MaxThreads)
+   $MaxThreads = 7 ###Number of Upgrades that will be ran at a time - max 10
+   while (@(Get-Job | Where { $_.State -eq "Running" }).Count -ge $MaxThreads)
    {  Write-Host "Waiting for open thread...($MaxThreads Maximum)"
       Start-Sleep -Seconds 3
    }
+   ### Mount of the database - trigger database upgrade
   $ScriptBlock = {
     param($Name,$webapp,$NormalizedDataSource) 
     
@@ -37,14 +35,14 @@ if ((Get-PSSnapin "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinu
   # Execute the jobs in parallel
   Start-Job -Name $_.name $ScriptBlock -ArgumentList $_
 }
-While (@(Get-Job | Where { $_.State -eq "Running" }).Count -ne 0)
+while (@(Get-Job | Where { $_.State -eq "Running" }).Count -ne 0)
 {  Write-Host "Waiting for background jobs..."
    Get-Job    #Just showing all the jobs
    Start-Sleep -Seconds 3
 }
  
 Get-Job       #Just showing all the jobs
-$Data = ForEach ($Job in (Get-Job)) {
+$Data = foreach ($Job in (Get-Job)) {
    Receive-Job $Job
    Remove-Job $Job
 }
