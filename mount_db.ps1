@@ -18,14 +18,14 @@ if ((Get-PSSnapin "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinu
 -eq $null) {Add-PSSnapin "Microsoft.SharePoint.PowerShell"} 
 
 
-###PowerShell run as Job#####
-foreach($Object in $Objects) { #Where $Objects is a collection of objects to process. It may be a computers list, for example.
-    $Check = $false #Variable to allow endless looping until the number of running jobs will be less than $maxConcurrentJobs.
-    while ($Check -eq $false) {
-        if ((Get-Job -State 'Running').Count -lt $maxConcurrentJobs) {
-  Import-Csv "contentdbs.csv"| %{
-
-  # Define what each job does
+| 
+ 
+  Import-Csv "contentdbs.csv"| % {
+   $MaxThreads = 7
+   While (@(Get-Job | Where { $_.State -eq "Running" }).Count -ge $MaxThreads)
+   {  Write-Host "Waiting for open thread...($MaxThreads Maximum)"
+      Start-Sleep -Seconds 3
+   }
   $ScriptBlock = {
     param($Name,$webapp,$NormalizedDataSource) 
     
@@ -36,17 +36,17 @@ foreach($Object in $Objects) { #Where $Objects is a collection of objects to pro
 
   # Execute the jobs in parallel
   Start-Job -Name $_.name $ScriptBlock -ArgumentList $_
-  $Check = $true #To stop endless looping and proceed to the next object in the list
 }
-
-
-
-# Wait for it all to complete
-While (Get-Job -State "Running")
-{
-  Start-Sleep 10
+While (@(Get-Job | Where { $_.State -eq "Running" }).Count -ne 0)
+{  Write-Host "Waiting for background jobs..."
+   Get-Job    #Just showing all the jobs
+   Start-Sleep -Seconds 3
 }
-
-# Getting the information back from the jobs
-Get-Job | Wait-Job
-Get-Job | Receive-Job
+ 
+Get-Job       #Just showing all the jobs
+$Data = ForEach ($Job in (Get-Job)) {
+   Receive-Job $Job
+   Remove-Job $Job
+}
+ 
+$Data | Select ProcessName,Product,ProductVersion | Format-Table -AutoSize
