@@ -47,4 +47,4 @@ $Data = foreach ($Job in (Get-Job)) {
    Remove-Job $Job
 }
  
-$Data | Select ProcessName,Product,ProductVersion | Format-Table -AutoSize
+$Data | Format-Table -AutoSize
