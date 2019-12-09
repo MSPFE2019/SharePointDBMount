@@ -18,7 +18,7 @@ if ((Get-PSSnapin "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinu
 
 ####Import CSV file from current directory 
   Import-Csv "contentdbs.csv"| % {
-   $MaxThreads = 7 ###Number of Upgrades that will be ran at a time - max 10
+   $MaxThreads = 4 ###Number of Upgrades that will be ran at a time - max 10
    while (@(Get-Job | Where { $_.State -eq "Running" }).Count -ge $MaxThreads)
    {  Write-Host "Waiting for open thread...($MaxThreads Maximum)"
       Start-Sleep -Seconds 3
