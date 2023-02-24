@@ -2,6 +2,23 @@
 Script for SharePoint Dismount and Mount Script for patching
 
 Dismount_DB.ps1 
+
+This PowerShell script performs the following tasks:
+
+-Checks if the "Microsoft.SharePoint.PowerShell" snap-in is installed. If it is not installed, it adds the snap-in.
+-Retrieves all SharePoint content databases using the Get-SPContentDatabase cmdlet.
+-Exports the content database information to a CSV file named "contentdbs.csv". The exported fields are Name, NormalizedDataSource, and WebApp.
+-Loops through each content database and dismounts it using the Dismount-SPContentDatabase cmdlet. It confirms the dismount action without prompting the user for confirmation.
+
+
+The script assumes that you have the appropriate permissions to execute SharePoint PowerShell cmdlets and access SharePoint content databases.
+
+Please note that dismounting a content database may cause downtime for the SharePoint farm or web application that is using it. It is important to understand the impact of this action before executing this script.
+
+
+
+Mount_DB.ps1
+
 This PowerShell script performs upgrades on SharePoint content databases in parallel, using a CSV file to specify the databases to upgrade.
 
 The first section of the script checks if the SharePoint PowerShell Snap-In is loaded and, if not, loads it.
@@ -21,16 +38,3 @@ The sixth section of the script gets the results of each job and removes the job
 
 Finally, the script displays the results in a formatted table.
 
-
-
-
-Mount_DB.ps1
-This script performs the following actions:
-
-- It adds the SharePoint PowerShell snap-in, if it is not already added.
-- It imports a CSV file named "contentdbs.csv" from the current directory.
-- It sets the maximum number of upgrades to run at a time to 4.
-- It defines a script block for the upgrade process that mounts a content database and waits for 50 seconds.
-- It executes the upgrades in parallel, using a maximum of 4 threads at a time. It waits for open threads if the maximum number of threads is reached.
-- It waits for all jobs to complete and retrieves the results.
-- It removes the jobs and displays the results in a table format.
