@@ -5,10 +5,10 @@ Dismount_DB.ps1
 
 This PowerShell script performs the following tasks:
 
--Checks if the "Microsoft.SharePoint.PowerShell" snap-in is installed. If it is not installed, it adds the snap-in.
--Retrieves all SharePoint content databases using the Get-SPContentDatabase cmdlet.
--Exports the content database information to a CSV file named "contentdbs.csv". The exported fields are Name, NormalizedDataSource, and WebApp.
--Loops through each content database and dismounts it using the Dismount-SPContentDatabase cmdlet. It confirms the dismount action without prompting the user for confirmation.
+- Checks if the "Microsoft.SharePoint.PowerShell" snap-in is installed. If it is not installed, it adds the snap-in.
+- Retrieves all SharePoint content databases using the Get-SPContentDatabase cmdlet.
+- Exports the content database information to a CSV file named "contentdbs.csv". The exported fields are Name, NormalizedDataSource, and WebApp.
+- Loops through each content database and dismounts it using the Dismount-SPContentDatabase cmdlet. It confirms the dismount action without prompting the user for confirmation.
 
 
 The script assumes that you have the appropriate permissions to execute SharePoint PowerShell cmdlets and access SharePoint content databases.
